@@ -1,0 +1,231 @@
+Final project Algo
+
+To Import:
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Scanner;
+import java.io.*;
+import java.util.*;
+
+Make a matrix class 
+
+Enter all of the matrix elements from project Euler problem 345 
+
+Step 1 make all the elements of the matrix negative.  Do this with a function negPopulate (public/static/void) input parameter (Integer[][] matrix)
+	method obvious
+
+Step 2 Identify the most negative element in each individual row.  Subtract this (negative) value from every element in that particular row. 	method rowReduce (public/static/void)   input parameter (Integer[][] matrix)
+	***use this -> Collections.min(Arrays.asList(  array name  ))***
+
+Step 3 Make a display Integer[][] matrix function 
+		Would be very useful to add row and column labels into display function 
+		Use printf formatting to display the matrix in a most readable manner.  *****use \t  and  %4d
+		three for loops h,i,j
+
+Step 4 column reduce.  Nearly identical to step 2 (public/static/void)   input parameter (Integer[][] matrix)
+	make a temp array call it temp_array make it the size of the input matrix.length
+	2 for loops to take all the elements from a column insert them into the temp array then call Collections.min(Arrays.asList(temp_array))
+	store that value as minCval and go through a third for loop to subtract that value from each value in corresponding column b4 cycling back through initial for loop.
+
+Step 5.  I need to make a method that identifies the frequency of zeros appearing in a given row.
+
+So a nested for loop the inner for loop populates an array full of all the values in the first row. the 2nd for loop calls zero frequency on that array of row values then stores it as the first element of the 2nd array.  then we can return this array which represents the number of zeros appearing in each row of the input param matrx  
+
+Make a method that returns an array of Integers call it zeroFreqRow.   (Public/static/Integer[]). In param (Integer[][] matrx)
+	lets make 2 new Integer arrays size of matrix.length from input param
+	temp_array2 is for storing all values in a particular row b4 calling Collections.frequency(arrays.asList(temp_array2), 0)
+	2nd array is called:  rowZeroFreqArray
+
+Step 6   Make another method that identifies the frequency of zeros in each column of a 2-d array where that 2-d array is the input parameter:  Type Integer[][]
+
+	this function will be called zeroFreqCol
+
+	return colZeroFreqArray
+
+	absolutely no difference between step 5 and 6 except the [ i ] <-> [ j ] get switched inside the 2nd for loop.   
+	this is just columns instead of rows.  
+
+Step 5 and 6 allow me to find out which row and/or column has the most zeros in it.  Now I must get the position of the row and or column with the most zeros in it.   (Which will allow me to get to the tricky process of virtually crossing rows and or columns out… clever fun to come). If there is a tie my program should always choose the row first or always choose the column first.  Either would be fine in the case of the tie.   I just would like it to be consistent,  that’ll be easy.
+
+Step 7  Now I need to isolate the index of the array corresponding to the row and or column with the highest zero frequency 
+
+	in the case that an array has multiple zero frequency values that tie for the largest.  This will not matter the code should handle all ties in the exact same manner; one of the ways which would work would be by always selecting the first appearance of this largest value and then if we only replace that value with larger values then ties will be fine.  
+
+I must admit that this portion could allow the program to select a column and/or row in a slightly suboptimal manner.   Solution if necessary would be to calculate the frequency of zeros in both rows and columns corresponding to each zero in the rows and/or columns amongst the tie.  This should break the tie bcuz the objective is to cross out the zeros with the fewest amount of lines.  I have solved this by hand and it I think it will be perfectly fine to arbitrarily but consistently break ties like this left to right and top to bottom.
+
+Step 7 method
+
+Call it getHighestZeroFreqIndex (public/static/int). Input param ( Integer [ ] array)
+
+Return -1 if there is nothing in the array (unnecessary?  Maybe but this could help me trouble shoot)
+
+Create an int call it most initialize it to 0
+
+Start the for loop at one then go to array.length and say if array[ i ] > array[most] then most = i. 
+Then return most 
+
+This method as mentioned early will just return the index of the first incidence of the largest number any ties will just be skipped and evaluated next as they occur left to right and top down.
+
+Step 8. Create a Node class so that each element can not only contain an integer value but 2 booleans as well.  
+
+Node class                                     	(public) 
+	Integer data.                     	(?  private/protected. Nothing listed so far)
+	boolean h_cross = false;   	(?  private/protected.  Nothing listed so far)
+      	boolean v_cross = false;   	(?  private/protected.  Nothing listed so far)
+
+      	public Node(Integer d) {
+        		data = d;
+      }
+
+    public int getData(){
+
+    public boolean getV_cross(){
+
+    public boolean getH_cross(){
+
+    public void setV_cross(){
+  
+    public void setH_cross(){
+
+Step 9.
+
+Now I want to write a method to produce a 2-d array of Node objects as described in my node class
+
+This will be (public/static/Node[][]) call it prodNodeMatrix with input params (Integer[][] matrx, Node[][] nMatrx)…   Old to new
+
+Return type is of course Node[][] as written above 
+
+So for loop i.
+	 Then for loop j
+	 take the Integer value stored at each matrx index[ i ][ j ] store it to new var Integer val
+	then use that to fill the node matrx calling new Node(val). This also inside the 2nd for loop 15 times filling each value in the first row then repeat for each of the rest of the rows
+	number of rows is of course matrx.length  same as # of columns 
+
+My nodes have a constructor as such, so that does that correctly.
+
+Step 10.
+
+Now I want to produce a test Matrix.  This is where my algo splits.  I am going to update a test matrix in my next step and update the node matrix at the same time.  this may not be necessary but if gives me two options going forward I imagine this will help.  Both may not be necessary but I anticipate this will assist me in a later step and help me stay organized.  (Explained later)
+
+So this test matrix will get +1000 to each element each time I strike out a row or column therefore the value is preserved and the line is noted.  This may eliminate the need for the node class. Entirely but in reality it will give me two weapons in which to accomplish my desired tasks.
+
+In addition calling mod 1000 (%1000) should restore the correct value.  And (//1000) floor division giving the number of times crossed out!!!! Boom
+
+Step 11.  (This step was added later as it was something I was doing each time in order to check a method explained later)
+
+Now I want to write a method to test Frequency 
+
+This testFreq method I am going to test the frequency of zeros in each row or column then print this array out for the rows and for the the columns and allow me to see that my program is crossing rows and columns out in the right order.   This is just a check but I thinks its nice so I may leave it in my program.  Adds some clarity. 
+Step 12.
+
+This method is called iterate1.  (Public/void). Not static input params(Integer[][] matrx , Node[][] nMatrix)
+
+So now we are going to use some of our previous methods all together.  I am going to get the row frequency array for 0’s. And the col frequency array for zeros appearing in columns.  then assign the max value of each to an int acVal and an int arVal (c for column r for row)
+
+Then I am going to call my method getHighestZeroFreqIndex method on colFreq array and assign that value to the new var int cVal.   Same thing for rows call that method on rowFreq and new var int rVal gets it.
+
+Then if acVal is greater than arVal  then that would mean one of the columns has the highest frequency of zeros in it and when this is the case:
+
+	use a for loop to call the .setV_cross method on each element of the node matrix in that specific column
+	ALSO each element in Integer matrix gets +1000 to each element in the same corresponding column 
+
+Doing that in two different ways allows me two different options to move forward later.  I anticipate using both actually.
+
+THEN using an else.  This would mean that acVal is not bigger than arVal or they are the same size.   Again breaking this tie I believe to be trivial.  This else will simply break ties crossing out rows b4 columns when they tie.  If I want to reverse that I reverse the > to < in the initial if.   (Worth testing later) should potentially affect the number of iterations and nothing else.   Optimality function again possible testing all zeros and zero freqs involved in the tie.   
+
+Step 13.  This step is to create a method called eval zeros.  The idea is to get the frequency of zeros in each row and then add them all together and the same for columns.  this is absolutely necessary because I need to keep calling method iterate1 until all zeros have been crossed out.  therefore this method will return a lower number each time I cross out a row or column and will allow me to create the boolean on my while loop for the very next method.
+
+Step 14. 
+
+Next I want a method that uses a few of the previous methods. 
+
+So this method calls the previous method (step 12) as many times as necessary.  Now the the real reason for step 13 and step 11
+
+While step 13 method > 0 
+	call step 11 method on Integer matrix to display info about which rows and or column are about to be selected to see if my program gets it right
+	call iterate1 (step 12 method)  inputing both Integer and Node matrix’s as input params
+	call displayM method which displays the Integer Matrix (test matrix). Should see the +1000s representing the crossed out rows or columns
+	and finally as a check print out the evalZeros which sums remaining zeros (although this will be double the amount remaining 0’s as each are represented twice, but no problem)
+
+Step 15   (exp). So now that I have crossed out all the zeros I can move on to selecting the smallest remaining un crossed out number.
+
+
+
+More functions to come
+
+Main
+
+Make an instance of the matrix class lets call it theMatrix.
+
+Pretty much call those funds in order with some formatting details for clarity:
+
+      Matrix theMatrix = new Matrix();
+
+      System.out.println("\n   The Initial Matrix:\n");
+      theMatrix.DisplayM(oGpmatrix);
+
+      theMatrix.negPopulate(oGpmatrix);
+
+      System.out.println("\n");
+      System.out.println("\nAlgo Step 1 complete");
+      System.out.println("Multiply all Matrix elements by negative one.\n");
+      theMatrix.DisplayM(oGmatrix);
+
+      theMatrix.rowReduce(oGmatrix);
+
+      System.out.println("\n");
+      System.out.println("\nAlgo Step 2 complete");
+      System.out.println("Smallest Value from each row has been identified");
+      System.out.println("This value has been subtracted from all elements in the corresponding row.\n");
+      theMatrix.DisplayM(newoGmatrix);
+
+      theMatrix.ColReduce(newoGmatrix);
+      System.out.println("\nAlgo Step 3 complete");
+      System.out.println("Smallest Value from each collumn has been identified");
+      System.out.println("This value has been subtracted from all elements in the corresponding collumn.\n");
+      theMatrix.DisplayM(newTwoGmatrix);
+
+      //Integer[] rowFreq = theMatrix.zeroFreqRow(newTwoGmatrix);
+      //Integer[] colFreq = theMatrix.zeroFreqCol(newTwoGmatrix);
+
+      theMatrix.zeroFreqCol(newTwoGmatrix);
+
+      //theMatrix.DisplayM2(newTwoGmatrix);
+
+      theMatrix.prodNodeMatrix(newTwoGmatrix, nodeMatrix);
+      DisplayNodeM(nodeMatrix);
+      theMatrix.prodTestMatrix(newTwoGmatrix, testIntMatrixI2);
+
+      theMatrix.step(testIntMatrixI2, nodeMatrix);
+
+
+
+
+ 
+
+  
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
