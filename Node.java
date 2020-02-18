@@ -1,11 +1,11 @@
 public class Node {
-      private
-          Integer data;
-          Integer solution_data;
-          boolean h_cross = false;
-          boolean v_cross = false;
-          boolean g_cross = false;
-          boolean selected = false;
+  
+      private Integer data;
+      private Integer solution_data;
+      private boolean h_cross = false;
+      private boolean v_cross = false;
+      private boolean g_cross = false;
+      private boolean selected = false;
 
 
       public static final String ANSI_RESET = "\u001B[0m";

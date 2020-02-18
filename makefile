@@ -1,5 +1,8 @@
+clean:
+	rm *.class
+
 build:
 	javac *.java
 
-run: 
+run:
 	java Driver
